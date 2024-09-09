@@ -6,6 +6,8 @@ const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lo
 
 
 let dataArray = []
+//let randomData = [1,1,1,1,5,9,4,5,6,8,54,56,4,564,56,89,45,46,8]
+let allData = []
 
 function fetchData(){
 fetch(url)
@@ -16,11 +18,13 @@ fetch(url)
         return response.json();
     })
     .then(data =>{
-        
-        dataArray.push(data)
-        console.log('Data fetched:', data)
+
+        allData.push(data);
+        filterData(data)
+        console.log('Data fetched:', data)   
         currentState(data)
         displayDataArray(data)
+        
     })
     .catch(error =>{
         console.log('Error fetching data: ', error);
@@ -31,7 +35,7 @@ function refreshFetch(){
     window.setInterval(() =>{
         fetchData()
         console.log('url fetched')
-    },5000)
+    },60000)
 
 }
 
@@ -51,8 +55,7 @@ function currentState(data){
             <li>Min Temperature: ${data.main.temp_min}</li>
             <li>Wind Speed: ${data.wind.speed}</li>
             <li>Wind Degrees: ${data.wind.deg}</li>
-        </ul>
-    `;
+        </ul>`;
     
     appendCall.append(newDiv);
 }
@@ -78,10 +81,27 @@ function displayDataArray(){
     </ul>
     `
     arrayList.append(newDivAr)
+
 });
+
+
+}
+
+function filterData(data){
+
+    for (data of allData) {
+        const existData = dataArray.find((item) => item.main.temp === data.main.temp || item.main.temp_max === data.main.temp_max || item.main.temp_min === data.main.temp_min || item.wind.speed === data.wind.speed || item.wind.deg === data.wind.deg);
+
+        if(!existData){
+            dataArray.push(data)
+        }
+    }
 }
 
 fetchData()
 refreshFetch()
 
+
 console.log(dataArray)
+console.log(allData)
+
