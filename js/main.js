@@ -90,18 +90,26 @@ function displayDataArray(){
 function filterData(data){
 
     for (data of allData) {
-        const existData = dataArray.find((item) => item.main.temp === data.main.temp || item.main.temp_max === data.main.temp_max || item.main.temp_min === data.main.temp_min || item.wind.speed === data.wind.speed || item.wind.deg === data.wind.deg);
+        const existData = dataArray.find((item) => 
+            item.wind.deg == data.wind.deg ||
+            item.wind.speed == data.wind.speed);
 
         if(!existData){
+            console.log("Adding new data to dataArray", data);
             dataArray.push(data)
         }
+        else{
+            console.log("data matches", data);
+        }
+        
     }
+    
 }
 
 fetchData()
 refreshFetch()
 
 
-console.log(dataArray)
-console.log(allData)
+console.log("Filtered data: ", dataArray)
+console.log("All data: ", allData)
 
