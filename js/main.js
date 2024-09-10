@@ -9,6 +9,8 @@ let dataArray = []
 //let randomData = [1,1,1,1,5,9,4,5,6,8,54,56,4,564,56,89,45,46,8]
 let allData = []
 
+
+
 function fetchData(){
 fetch(url)
     .then(response => {
@@ -105,6 +107,14 @@ function filterData(data){
     }
     
 }
+
+//function to set value of pulling data intervals
+function dataIntervals(data){
+
+}
+
+//function that checks userInput of geo-location
+//function that breaks objects apart into
 
 fetchData()
 refreshFetch()
