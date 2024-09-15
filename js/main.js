@@ -7,6 +7,7 @@ const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lo
 
 let dataArray = []
 let allData = []
+let currentIntervalId = null;
 
 function fetchData(){
 fetch(url)
@@ -17,7 +18,6 @@ fetch(url)
         return response.json();
     })
     .then(data =>{
-
         allData.push(data);
         filterData(data)
         console.log('Data fetched:', data)   
@@ -52,7 +52,7 @@ function currentState(data){
 }
 
 function displayDataArray(){
-    console.log('displayDataArray called');
+    //console.log('displayDataArray called');
     let arrayList = document.querySelector('.arrayList');
     arrayList.innerHTML = ''
 
@@ -110,7 +110,7 @@ function initializeIntervalControl(){
     intervalBtnEl.classList.add('interval-Btn')
     intervalBtnEl.innerText = 'Set Data Interval'
    
-    //for looop to create options from Intercal array
+    //for loop to create options from Interval array
     for(let i = 0; i < interval.length; i++){
         let intervalOptiontEl = document.createElement('option');
         intervalOptiontEl.innerHTML = `${interval[i]}`
@@ -122,58 +122,17 @@ function initializeIntervalControl(){
     dataColEl.append(intervalBtnEl);
 }
 
-/*
-function setupIntervalButton(input,select,button){
-    console.log('Setting up event listener'); // Debugging line
-    console.log('Button element inside setup:', button); // Debugging line
-    
-    button.addEventListener('click', () =>{
-        const intervalValue = input.value;
-        const selectedInterval = select.value
-
-        if (!intervalValue && !selectedInterval) {
-            alert("Please provide numeric value and select interval type");
-        } else if (!intervalValue) {
-            alert("Please provide numeric value for interval");
-        } else if (!selectedInterval) {
-            alert("Please select interval type");
-        } else{
-            console.log(`Interval set to ${intervalValue} ${selectedInterval}`);
-            
-        }
-
-        if(selectedInterval === "Seconds"){
-            console.log(intervalValue)
-            return intervalValue * 1000
-        }
-        else if(selectedInterval === "Minutes"){
-            console.log(intervalValue)
-            return intervalValue * 60000
-        }
-        else if(selectedInterval === "Hours"){
-            console.log(intervalValue)
-            return intervalValue * 60 * 60 * 1000
-        }else{
-            return intervalValue * 1000
-        }
-
-    })
-}
-*/
-
 initializeIntervalControl()
 
 const intervalLookup = {
     Seconds: 1000,
     Minutes: 60000,
-    Hours: 60 * 60 * 10000,
+    Hours: 60 * 60 * 1000,
 }
 
 const input = document.querySelector('.interval-input');
 const select = document.querySelector('.select-interval');
 const button = document.querySelector('.interval-Btn');
-
-let fetchInterval = null;
 
 function isValidInterval(intervalValue, selectedInterval){
     if (!intervalValue && !selectedInterval) {
@@ -186,12 +145,12 @@ function isValidInterval(intervalValue, selectedInterval){
         alert('Please select interval type');
         return false;
       }
-      return true
+      return true;
 }
 
 const setupIntervalButton = (input,select,button) =>{
-    console.log('Setting up event listener');
-    console.log('Button elements inside setup:', button);
+    //console.log('Setting up event listener');
+    //console.log('Button elements inside setup:', button);
 
     button.addEventListener('click', () =>{
     const intervalValue = input.value;
@@ -208,52 +167,59 @@ const setupIntervalButton = (input,select,button) =>{
     const intervalMilliseconds = intervalValue * (intervalLookup[selectedInterval] || 1000);
     console.log('Interval in milliseconds:', intervalMilliseconds);
 
+    refreshFetch(intervalMilliseconds);
+    
+    });
+}
+
+const setupDynamicIntervalChange = (input, select, button) => {
+
     
 
-    setupDynamicIntervalChange(input, select);
-    refreshFetch(intervalMilliseconds);
+    const stopFetching = () => {
+        if (currentIntervalId) {
+            clearInterval(currentIntervalId);
+            console.log('Data fetching stopped.');
+            currentIntervalId = null;  // Reset the interval ID
+        }
+    };
 
-    });
-}
+    const startFetching = (intervalMilliseconds) => {
+        currentIntervalId = setInterval(() => {
+            fetchData();
+            console.log('Data fetched at interval:', intervalMilliseconds);
+        }, intervalMilliseconds);
+        console.log('Data fetching started at interval:', intervalMilliseconds);
+    };
 
-const refreshFetch = (intervalMilliseconds) =>{
-    setInterval(() =>{
-        fetchData();
-        console.log('url fetched');
-    }, intervalMilliseconds)
-}
-
-const setupDynamicIntervalChange = (input,select) =>{
-
-    input.addEventListener('input', () =>{
-        const intervalValue = input.value;
+    const updateInterval = () => {
+        const intervalValue = parseInt(input.value, 10);
         const selectedInterval = select.value;
 
-        if(isValidInterval(intervalValue, selectedInterval)){
-            document.querySelector('.interval-Btn');
-            return
+        // Validate input
+        if (isNaN(intervalValue) || !intervalLookup[selectedInterval]) {
+            //console.log('Invalid input or selection. Interval not updated.');
+            return;
         }
 
-    });
+        const intervalMilliseconds = intervalValue * intervalLookup[selectedInterval];
+        console.log('New interval in milliseconds:', intervalMilliseconds);
 
-    select.addEventListener('change', () =>{
-        const intervalValue = input.value;
-        const selectedInterval = select.value;
+        // Stop fetching if already running
+        stopFetching();
 
-        if(isValidInterval(intervalValue, selectedInterval)){
-            document.querySelector('.interval-Btn');
-        }
-    });
-}
+        // Start fetching with new interval
+        startFetching(intervalMilliseconds);
+    };
 
-const clearInterval = (fetchInterval) =>{
-    fetchInterval = ' '
-}
+    // Event listeners to handle changes
+    input.addEventListener('change', updateInterval);
+    select.addEventListener('change', updateInterval);
 
-setupIntervalButton(input, select, button);
+    // Also set the interval when the button is clicked
+    button.addEventListener('click', updateInterval);
+};
 
-fetchData()
 
-// console.log(dataArray)
-// console.log(allData)
+setupDynamicIntervalChange(input,select,button);
 
