@@ -85,12 +85,14 @@ function filterData(data){
         || Number(item.main.temp) === Number(data.main.temp)
         || Number(item.main.temp_max) === Number(data.main.temp_max)
         || Number(item.main.temp_min) === Number(data.main.temp_min)
-    );
-
+        );
+    
         if(!existData){
             dataArray.push(data)
         }
     }
+    
+    
 }
 
 //Create Interval Input function
