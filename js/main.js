@@ -80,7 +80,12 @@ function displayDataArray(){
 function filterData(data){
 
     for (data of allData) {
-        const existData = dataArray.find((item) => item.wind.speed === data.wind.speed || item.wind.deg === data.wind.deg);
+        const existData = dataArray.find((item) => item.wind.speed === data.wind.speed 
+        || item.wind.deg === data.wind.deg 
+        || Number(item.main.temp) === Number(data.main.temp)
+        || Number(item.main.temp_max) === Number(data.main.temp_max)
+        || Number(item.main.temp_min) === Number(data.main.temp_min)
+    );
 
         if(!existData){
             dataArray.push(data)
