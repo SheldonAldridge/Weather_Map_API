@@ -7,6 +7,40 @@ const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lo
 
 let dataArray = []
 let allData = []
+let coordinates = [
+
+    {
+        name: 'Montague',
+        lat: '-33.8625143',
+        lon: '18.5191127',
+    },
+
+    {
+        name: 'Bothasig',
+        lat: '-33.8613841',
+        lon: '18.5318508',
+    },
+
+    {
+        name: 'Piketberg',
+        lat: '-32.9140505',
+        lon: '18.7550459',
+    },
+
+    {
+        name: 'Diep River',
+        lat: '-34.0496244',
+        lon: '18.4434611',
+    }
+
+    {
+        name: 'Goodwood',
+        lat: '-33.9076068',
+        lon: '18.5003416',
+    }
+
+]
+
 let currentIntervalId = null;
 
 function fetchData(){
@@ -20,7 +54,7 @@ fetch(url)
     .then(data =>{
         allData.push(data);
         filterData(data)
-        console.log('Data fetched:', data)   
+        console.log('Data fetched:', data)
         currentState(data)
         displayDataArray(data)
 
