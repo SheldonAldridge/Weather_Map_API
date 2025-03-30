@@ -7,39 +7,7 @@ const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lo
 
 let dataArray = []
 let allData = []
-let coordinates = [
 
-    {
-        name: 'Montague',
-        lat: '-33.8625143',
-        lon: '18.5191127',
-    },
-
-    {
-        name: 'Bothasig',
-        lat: '-33.8613841',
-        lon: '18.5318508',
-    },
-
-    {
-        name: 'Piketberg',
-        lat: '-32.9140505',
-        lon: '18.7550459',
-    },
-
-    {
-        name: 'Diep River',
-        lat: '-34.0496244',
-        lon: '18.4434611',
-    }
-
-    {
-        name: 'Goodwood',
-        lat: '-33.9076068',
-        lon: '18.5003416',
-    }
-
-]
 
 let currentIntervalId = null;
 
@@ -160,10 +128,67 @@ function initializeIntervalControl(){
 
     dataColEl.append(intervalInputEl);
     dataColEl.append(intervalSelectEl);
+    
     dataColEl.append(intervalBtnEl);
+    
+    
 }
 
 initializeIntervalControl()
+
+//Create Location selection function
+function coLocation(){
+
+    let coordinates = [
+
+        {
+            name: 'Montague',
+            lat: '-33.8625143',
+            lon: '18.5191127',
+        },
+    
+        {
+            name: 'Bothasig',
+            lat: '-33.8613841',
+            lon: '18.5318508',
+        },
+    
+        {
+            name: 'Piketberg',
+            lat: '-32.9140505',
+            lon: '18.7550459',
+        },
+    
+        {
+            name: 'Diep River',
+            lat: '-34.0496244',
+            lon: '18.4434611',
+        },
+    
+        {
+            name: 'Goodwood',
+            lat: '-33.9076068',
+            lon: '18.5003416',
+        }
+    
+    ]
+
+    let dataColEl = document.querySelector('.col-interval')
+    let coInput = document.createElement('select')
+    let coInputData = document.createAttribute('data-location-type')
+
+    
+
+    for (let i = 0; i < coordinates.length; i++) {
+        let locationOptiontEl = document.createElement('option')
+        const coordinateEl = coordinates[i];
+        coInput.append(locationOptiontEl)
+        locationOptiontEl.append(coordinateEl.name)
+    }
+
+    return dataColEl.append(coInput)
+    
+}
 
 const intervalLookup = {
     Seconds: 1000,
@@ -260,7 +285,6 @@ const setupDynamicIntervalChange = (input, select, button) => {
     // Also set the interval when the button is clicked
     button.addEventListener('click', updateInterval);
 };
-
 
 setupDynamicIntervalChange(input,select,button);
 
