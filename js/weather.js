@@ -101,7 +101,7 @@ function filterData(data){
 function initializeIntervalControl(){
     
     let dataColEl = document.querySelector('.col-interval')
-    let interval = [' ','Seconds','Minutes','Hours']
+    let interval = ['Select','Seconds','Minutes','Hours']
 
     let intervalInputEl = document.createElement('input');
     intervalInputEl.setAttribute('type','text')
@@ -126,18 +126,17 @@ function initializeIntervalControl(){
         intervalSelectEl.append(intervalOptiontEl);
     }
 
+
     dataColEl.append(intervalInputEl);
     dataColEl.append(intervalSelectEl);
-    
+    coLocationEl()
     dataColEl.append(intervalBtnEl);
-    
-    
 }
 
 initializeIntervalControl()
 
 //Create Location selection function
-function coLocation(){
+function coLocationEl(){
 
     let coordinates = [
 
@@ -175,9 +174,9 @@ function coLocation(){
 
     let dataColEl = document.querySelector('.col-interval')
     let coInput = document.createElement('select')
-    let coInputData = document.createAttribute('data-location-type')
+    coInput.classList()
+    let coOrData = document.createAttribute('data-coordinates-type')
 
-    
 
     for (let i = 0; i < coordinates.length; i++) {
         let locationOptiontEl = document.createElement('option')
@@ -187,7 +186,7 @@ function coLocation(){
     }
 
     return dataColEl.append(coInput)
-    
+
 }
 
 const intervalLookup = {
@@ -197,6 +196,7 @@ const intervalLookup = {
 }
 
 const input = document.querySelector('.interval-input');
+const select = document.querySelector('.select-interval');
 const select = document.querySelector('.select-interval');
 const button = document.querySelector('.interval-Btn');
 
@@ -221,6 +221,7 @@ const setupIntervalButton = (input,select,button) =>{
     button.addEventListener('click', () =>{
     const intervalValue = input.value;
     const selectedInterval = select.value;
+    const selectLoc = 
 
     //validation check
     if(!isValidInterval(intervalValue, selectedInterval)) return;
