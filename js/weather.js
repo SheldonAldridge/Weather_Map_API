@@ -174,19 +174,21 @@ function coLocationEl(){
 
     let dataColEl = document.querySelector('.col-interval')
     let coInput = document.createElement('select')
-    coInput.classList()
-    let coOrData = document.createAttribute('data-coordinates-type')
 
 
     for (let i = 0; i < coordinates.length; i++) {
         let locationOptiontEl = document.createElement('option')
         const coordinateEl = coordinates[i];
+        
         coInput.append(locationOptiontEl)
         locationOptiontEl.append(coordinateEl.name)
+
+        locationOptiontEl.setAttribute('data-lat', coordinateEl.lat);
+        locationOptiontEl.setAttribute('data-lon', coordinateEl.lon);
     }
-
+    
     return dataColEl.append(coInput)
-
+    
 }
 
 const intervalLookup = {
@@ -196,7 +198,6 @@ const intervalLookup = {
 }
 
 const input = document.querySelector('.interval-input');
-const select = document.querySelector('.select-interval');
 const select = document.querySelector('.select-interval');
 const button = document.querySelector('.interval-Btn');
 
@@ -221,7 +222,6 @@ const setupIntervalButton = (input,select,button) =>{
     button.addEventListener('click', () =>{
     const intervalValue = input.value;
     const selectedInterval = select.value;
-    const selectLoc = 
 
     //validation check
     if(!isValidInterval(intervalValue, selectedInterval)) return;
