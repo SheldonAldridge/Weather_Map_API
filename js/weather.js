@@ -1,17 +1,9 @@
-const unit = 'metric'
-const lat = '-33.8625143';
-const lon = '18.5191127';
-const apiKey = '957232e17ab264b38b2ba06671725843'
-const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
-
-
 let dataArray = []
 let allData = []
 
-
 let currentIntervalId = null;
 
-function fetchData(){
+function fetchData(url){
 fetch(url)
     .then(response => {
         if(!response.ok){
@@ -103,6 +95,9 @@ function initializeIntervalControl(){
     let dataColEl = document.querySelector('.col-interval')
     let interval = ['Select','Seconds','Minutes','Hours']
 
+    const locationSelect = coLocationEl();
+    dataColEl.append(locationSelect);
+
     let intervalInputEl = document.createElement('input');
     intervalInputEl.setAttribute('type','text')
     intervalInputEl.classList.add('interval-input')
@@ -111,14 +106,26 @@ function initializeIntervalControl(){
         if(isNaN(event.key) && event.key !== 'Backspace'){
             event.preventDefault();
         }
+
+        const selectedOption = locationSelect.options[locationSelect.selectedIndex];
+        const lat = selectedOption.getAttribute('data-lat');
+        const lon = selectedOption.getAttribute('data-lon');
+
+        if(lat && lon){
+            const apiKey = '957232e17ab264b38b2ba06671725843'
+            const unit = 'metric'
+            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
+            console.log(url)
+            
+            fetchData(url);
+        }
+
+        
     };
     
     let intervalSelectEl = document.createElement('select');
     intervalSelectEl.classList.add('select-interval')
-    let intervalBtnEl = document.createElement('button');
-    intervalBtnEl.classList.add('interval-Btn')
-    intervalBtnEl.innerText = 'Set Data Interval'
-   
+    
     //for loop to create options from Interval array
     for(let i = 0; i < interval.length; i++){
         let intervalOptiontEl = document.createElement('option');
@@ -126,10 +133,14 @@ function initializeIntervalControl(){
         intervalSelectEl.append(intervalOptiontEl);
     }
 
+    let intervalBtnEl = document.createElement('button');
+    intervalBtnEl.classList.add('interval-Btn')
+    intervalBtnEl.innerText = 'Set Data Interval'
+
+    
 
     dataColEl.append(intervalInputEl);
     dataColEl.append(intervalSelectEl);
-    coLocationEl()
     dataColEl.append(intervalBtnEl);
 }
 
@@ -139,55 +150,27 @@ initializeIntervalControl()
 function coLocationEl(){
 
     let coordinates = [
-
-        {
-            name: 'Montague',
-            lat: '-33.8625143',
-            lon: '18.5191127',
-        },
-    
-        {
-            name: 'Bothasig',
-            lat: '-33.8613841',
-            lon: '18.5318508',
-        },
-    
-        {
-            name: 'Piketberg',
-            lat: '-32.9140505',
-            lon: '18.7550459',
-        },
-    
-        {
-            name: 'Diep River',
-            lat: '-34.0496244',
-            lon: '18.4434611',
-        },
-    
-        {
-            name: 'Goodwood',
-            lat: '-33.9076068',
-            lon: '18.5003416',
-        }
-    
-    ]
+        {name: 'Montague',lat: '-33.8625143',lon: '18.5191127'},
+        {name: 'Bothasig',lat: '-33.8613841',lon: '18.5318508'},
+        {name: 'Piketberg',lat: '-32.9140505',lon: '18.7550459'},
+        {name: 'Diep River',lat: '-34.0496244',lon: '18.4434611'},
+        {name: 'Goodwood',lat: '-33.9076068',lon: '18.5003416'}
+    ];
 
     let dataColEl = document.querySelector('.col-interval')
     let coInput = document.createElement('select')
 
 
     for (let i = 0; i < coordinates.length; i++) {
-        let locationOptiontEl = document.createElement('option')
         const coordinateEl = coordinates[i];
-        
-        coInput.append(locationOptiontEl)
+        let locationOptiontEl = document.createElement('option')
         locationOptiontEl.append(coordinateEl.name)
-
         locationOptiontEl.setAttribute('data-lat', coordinateEl.lat);
         locationOptiontEl.setAttribute('data-lon', coordinateEl.lon);
+        coInput.append(locationOptiontEl)
     }
     
-    return dataColEl.append(coInput)
+    return coInput
     
 }
 
