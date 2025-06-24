@@ -1,10 +1,12 @@
 let dataArray = []
 let allData = []
 
+let currentUrl = null;
+
 let currentIntervalId = null;
 
-function fetchData(url){
-fetch(url)
+function fetchData(currentUrl){
+fetch(currentUrl)
     .then(response => {
         if(!response.ok){
             throw new Error('Can not connect to API ' + response.statusText);
@@ -114,13 +116,10 @@ function initializeIntervalControl(){
         if(lat && lon){
             const apiKey = '957232e17ab264b38b2ba06671725843'
             const unit = 'metric'
-            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
-            console.log(url)
-            
-            fetchData(url);
+             currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
+            console.log(currentUrl)
+            fetchData(currentUrl);
         }
-
-        
     };
     
     let intervalSelectEl = document.createElement('select');
@@ -236,8 +235,13 @@ const setupDynamicIntervalChange = (input, select, button) => {
 
     const startFetching = (intervalMilliseconds) => {
         currentIntervalId = setInterval(() => {
-            fetchData();
+            if(currentUrl){
+            fetchData(currentUrl);
             console.log('Data fetched at interval:', intervalMilliseconds);
+            }
+            else{
+                 console.log('No valid URL set yet.');
+            }
         }, intervalMilliseconds);
         console.log('Data fetching started at interval:', intervalMilliseconds);
     };
