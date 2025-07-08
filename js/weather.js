@@ -108,18 +108,6 @@ function initializeIntervalControl(){
         if(isNaN(event.key) && event.key !== 'Backspace'){
             event.preventDefault();
         }
-
-        const selectedOption = locationSelect.options[locationSelect.selectedIndex];
-        const lat = selectedOption.getAttribute('data-lat');
-        const lon = selectedOption.getAttribute('data-lon');
-
-        if(lat && lon){
-            const apiKey = '957232e17ab264b38b2ba06671725843'
-            const unit = 'metric'
-             currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
-            console.log(currentUrl)
-            fetchData(currentUrl);
-        }
     };
     
     let intervalSelectEl = document.createElement('select');
@@ -141,6 +129,7 @@ function initializeIntervalControl(){
     dataColEl.append(intervalInputEl);
     dataColEl.append(intervalSelectEl);
     dataColEl.append(intervalBtnEl);
+
 }
 
 initializeIntervalControl()
@@ -197,22 +186,23 @@ function isValidInterval(intervalValue, selectedInterval){
       return true;
 }
 
-const setupIntervalButton = (input,select,button) =>{
-    //console.log('Setting up event listener');
-    //console.log('Button elements inside setup:', button);
+const setupIntervalButton = (input,select,button,locationSelect) =>{
 
     button.addEventListener('click', () =>{
     const intervalValue = input.value;
     const selectedInterval = select.value;
 
+    
     //validation check
     if(!isValidInterval(intervalValue, selectedInterval)) return;
 
+    //step previous fetch loop
     if(fetchInterval){
         clearInterval(fetchInterval);
         console.log('Previous interval cleared')
     }
 
+    //Start new fetch loop
     const intervalMilliseconds = intervalValue * (intervalLookup[selectedInterval] || 1000);
     console.log('Interval in milliseconds:', intervalMilliseconds);
 
@@ -222,8 +212,6 @@ const setupIntervalButton = (input,select,button) =>{
 }
 
 const setupDynamicIntervalChange = (input, select, button) => {
-
-    
 
     const stopFetching = () => {
         if (currentIntervalId) {
@@ -236,11 +224,11 @@ const setupDynamicIntervalChange = (input, select, button) => {
     const startFetching = (intervalMilliseconds) => {
         currentIntervalId = setInterval(() => {
             if(currentUrl){
-            fetchData(currentUrl);
-            console.log('Data fetched at interval:', intervalMilliseconds);
+                fetchData(currentUrl);
+                console.log('Data fetched at interval:', intervalMilliseconds);
             }
             else{
-                 console.log('No valid URL set yet.');
+                console.log('No valid URL set yet.');
             }
         }, intervalMilliseconds);
         console.log('Data fetching started at interval:', intervalMilliseconds);
@@ -255,6 +243,17 @@ const setupDynamicIntervalChange = (input, select, button) => {
             //console.log('Invalid input or selection. Interval not updated.');
             return;
         }
+        const locationSelect = document.querySelector('.location-select');
+        const selectedOption = locationSelect.options[locationSelect.selectedIndex];
+        const lat = selectedOption.getAttribute('data-lat');
+        const lon = selectedOption.getAttribute('data-lon');
+
+            const apiKey = '957232e17ab264b38b2ba06671725843'
+            const unit = 'metric'
+            currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
+             console.log("URL set in updateInterval:", currentUrl);
+            fetchData(currentUrl);
+
 
         const intervalMilliseconds = intervalValue * intervalLookup[selectedInterval];
         console.log('New interval in milliseconds:', intervalMilliseconds);
@@ -272,6 +271,8 @@ const setupDynamicIntervalChange = (input, select, button) => {
 
     // Also set the interval when the button is clicked
     button.addEventListener('click', updateInterval);
+
+
 };
 
 setupDynamicIntervalChange(input,select,button);
