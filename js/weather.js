@@ -124,12 +124,9 @@ function initializeIntervalControl(){
     intervalBtnEl.classList.add('interval-Btn')
     intervalBtnEl.innerText = 'Set Data Interval'
 
-    
-
     dataColEl.append(intervalInputEl);
     dataColEl.append(intervalSelectEl);
     dataColEl.append(intervalBtnEl);
-
 }
 
 initializeIntervalControl()
@@ -138,6 +135,7 @@ initializeIntervalControl()
 function coLocationEl(){
 
     let coordinates = [
+        {name: 'Choose Location',lat: '',lon: ''},
         {name: 'Montague',lat: '-33.8625143',lon: '18.5191127'},
         {name: 'Bothasig',lat: '-33.8613841',lon: '18.5318508'},
         {name: 'Piketberg',lat: '-32.9140505',lon: '18.7550459'},
@@ -157,9 +155,7 @@ function coLocationEl(){
         locationOptiontEl.setAttribute('data-lon', coordinateEl.lon);
         coInput.append(locationOptiontEl)
     }
-    
     return coInput
-    
 }
 
 const intervalLookup = {
@@ -243,18 +239,18 @@ const setupDynamicIntervalChange = (input, select, button) => {
             //console.log('Invalid input or selection. Interval not updated.');
             return;
         }
-        const locationSelect = document.querySelector('.location-select');
-        const selectedOption = locationSelect.options[locationSelect.selectedIndex];
+        const locationSelect = coLocationEl();
+        const selectedOption = locationSelect.coordinates[locationSelect.selectedIndex];
         const lat = selectedOption.getAttribute('data-lat');
         const lon = selectedOption.getAttribute('data-lon');
-
+        console.log(lat,lon)
             const apiKey = '957232e17ab264b38b2ba06671725843'
             const unit = 'metric'
             currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
              console.log("URL set in updateInterval:", currentUrl);
             fetchData(currentUrl);
 
-
+        
         const intervalMilliseconds = intervalValue * intervalLookup[selectedInterval];
         console.log('New interval in milliseconds:', intervalMilliseconds);
 
